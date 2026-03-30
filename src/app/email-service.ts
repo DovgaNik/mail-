@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -12,7 +12,12 @@ export class EmailService {
 
   setupAccount(): Observable<any> {
 
-    return this.http.get<any>(this.baseUrl + "/domains")
+    return this.http.get<any>(this.baseUrl + "/domains").pipe(
+      map (domains => {
+        let domainList = domains["hydra:member"]
+        return domainList[Math.floor(Math.random() * domainList.length)]["domain"]
+      })
+    )
 
   }
 }
