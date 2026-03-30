@@ -1,0 +1,38 @@
+.mailbox-container {
+    max-width: 850px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.mailbox-card {
+    background: white;
+    border-radius: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.mailbox-header {
+    background-color: #bb2d3b;
+    color: white;
+    display: flex;
+    padding: 18px 40px;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.col-sender { flex: 2; }
+.col-subject { flex: 4; }
+.col-time { flex: 1; text-align: right; }
+
+.mailbox-body {
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 20px 40px;
+}
+
+.empty-state {
+    color: #666;
+    font-style: italic;
+}
