@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { map, Observable, switchMap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { email } from '@angular/forms/signals';
 
 @Injectable({
   providedIn: 'root',
@@ -41,7 +40,7 @@ export class EmailService {
                 })
                 .pipe(
                   map((token) => {
-                    return token['token'];
+                    return [token['token'], this.emailAddress];
                   }),
                 );
             }),
