@@ -1,0 +1,2 @@
+[Context] On init, the webapp should look for data into the cookies, if it finds an email, Token that aren't expired yet, it should just display that information. Elseway it should call the function to create those data.
+[TODO] Store the data (email + Token + expiration date) inside the cookies.
