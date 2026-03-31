@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { map, Observable, switchMap } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { from, map, Observable, switchMap } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { EmailMessage } from '../EmailMessage';
 
 @Injectable({
   providedIn: 'root',
@@ -9,6 +10,7 @@ export class EmailService {
   private baseUrl: string = 'https://api.mail.gw';
   emailAddress: string = '';
   password: string = '';
+  token: string = '';
 
   constructor(private http: HttpClient) {}
 
@@ -40,12 +42,40 @@ export class EmailService {
                 })
                 .pipe(
                   map((token) => {
+                    this.token = token['token'];
                     return [token['token'], this.emailAddress];
                   }),
                 );
             }),
           );
       }),
+    );
+  }
+
+  retrieveMssages(): Observable<EmailMessage> {
+    return this.http.get<any>(this.baseUrl + '/messages', {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + this.token,
+      }),
+    }).pipe(
+      map((messages) => messages['hydra:member'] ?? []),
+      switchMap((messageList: any[]) =>
+        from(
+          messageList.map((message: any) => {
+            const sender = typeof message.from === 'string'
+              ? message.from
+              : (message.from?.address ?? '');
+
+            return new EmailMessage(
+              message.id,
+              message.subject,
+              message.intro,
+              sender,
+              message.createdAt,
+            );
+          }),
+        ),
+      ),
     );
   }
 }
