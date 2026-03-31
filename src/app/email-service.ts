@@ -18,6 +18,26 @@ export class EmailService {
     return Math.random().toString(36).substring(7);
   }
 
+  private getAuthHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      Authorization: 'Bearer ' + this.token,
+    });
+  }
+
+  private getSenderAddress(message: any): string {
+    return typeof message.from === 'string' ? message.from : (message.from?.address ?? '');
+  }
+
+  private getHtmlBody(message: any): string {
+    const html = message.html ?? message.htmlBody ?? '';
+
+    if (Array.isArray(html)) {
+      return html.join('');
+    }
+
+    return typeof html === 'string' ? html : '';
+  }
+
   setupAccount(): Observable<any> {
     return this.http.get<any>(this.baseUrl + '/domains').pipe(
       map((domains) => {
@@ -54,28 +74,42 @@ export class EmailService {
 
   retrieveMssages(): Observable<EmailMessage> {
     return this.http.get<any>(this.baseUrl + '/messages', {
-      headers: new HttpHeaders({
-        Authorization: 'Bearer ' + this.token,
-      }),
+      headers: this.getAuthHeaders(),
     }).pipe(
       map((messages) => messages['hydra:member'] ?? []),
       switchMap((messageList: any[]) =>
         from(
-          messageList.map((message: any) => {
-            const sender = typeof message.from === 'string'
-              ? message.from
-              : (message.from?.address ?? '');
-
-            return new EmailMessage(
+          messageList.map((message: any) =>
+            new EmailMessage(
               message.id,
               message.subject,
               message.intro,
-              sender,
+              this.getSenderAddress(message),
               message.createdAt,
-            );
-          }),
+              this.getHtmlBody(message),
+            ),
+          ),
         ),
       ),
     );
+  }
+
+  retrieveMessageById(messageId: string): Observable<EmailMessage> {
+    return this.http
+      .get<any>(`${this.baseUrl}/messages/${messageId}`, {
+        headers: this.getAuthHeaders(),
+      })
+      .pipe(
+        map((message) =>
+          new EmailMessage(
+            message.id,
+            message.subject,
+            message.intro,
+            this.getSenderAddress(message),
+            message.createdAt,
+            this.getHtmlBody(message),
+          ),
+        ),
+      );
   }
 }
