@@ -18,7 +18,7 @@ export class EmailService {
   }
 
   // Function to be called for creating data.
-  setupAccount(): Observable<any> {
+  setupAccount(): Observable<{ token: any; emailAddress: string }> {
     return this.http.get<any>(this.baseUrl + '/domains').pipe(
       map((domains) => {
         let domainList = domains['hydra:member'];
@@ -42,7 +42,7 @@ export class EmailService {
                 })
                 .pipe(
                   map((token) => {
-                    return [token['token'], this.emailAddress];
+                    return { token: token['token'], emailAddress: this.emailAddress };
                   }),
                 );
             }),
