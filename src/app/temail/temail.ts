@@ -15,7 +15,7 @@ import { Observable } from 'rxjs';
 })
 export class Temail {
   email_adress = "email-email.email@email.com"
-  private current_account: Observable<any> = null   // Variable pour manipuler le compte mail actuel.
+  private current_account: Observable<{ token: any; emailAddress: string }> | null = null   // Variable pour manipuler le compte mail actuel.
 
   // Déclaration de la dépendance UtilService.
   constructor(private utilsService: UtilsService, private cookieService: CookieService, private emailService: EmailService) {}
@@ -36,7 +36,7 @@ export class Temail {
   getNewEmailAndSetCookie(){
     this.current_account = this.emailService.setupAccount()
 
-    // Ici on va vérifier individuellement que les cookies réservés aux informations des 
+    // Ici on va vérifier individuellement que les cookies réservés aux informations de l'addresse actuelle soient vide.
     if(this.cookieService.check(this.utilsService.cookie_email_name)){
       this.cookieService.delete(this.utilsService.cookie_email_name)
     }
@@ -47,5 +47,18 @@ export class Temail {
     if(this.cookieService.check(this.utilsService.cookie_token_name)){
       this.cookieService.delete(this.utilsService.cookie_token_name)
     }
+
+    this.current_account.subscribe((account) => {
+      this.email_adress = account.emailAddress;
+
+      // Stockage des cookies
+      this.cookieService.set(this.utilsService.cookie_email_name, account.emailAddress, {
+        expires: 1,     // Définit la durée de vie du cookie en jours, c'est utilisé pour limiter le risque de vol de session.
+        path: '/',      // Je suppose que ça limite la présence du cookie à uniquement le chemin spécifié.
+        //secure: true,       // Aurait normalement forcé à ce que les cookies soient envoyés uniquement en https.
+        sameSite: 'Strict'  // Pour vérifier à ce que le site soit le même.
+      });
+      this.cookieService.set(this.utilsService.cookie_token_name, account.token);
+    });
   }
 }
