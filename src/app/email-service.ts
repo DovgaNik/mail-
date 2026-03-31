@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { map, Observable, switchMap } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -9,6 +9,7 @@ export class EmailService {
   private baseUrl: string = 'https://api.mail.gw';
   emailAddress: string = '';
   password: string = '';
+  token: string = '';
 
   constructor(private http: HttpClient) {}
 
@@ -40,6 +41,7 @@ export class EmailService {
                 })
                 .pipe(
                   map((token) => {
+                    this.token = token;
                     return [token['token'], this.emailAddress];
                   }),
                 );
@@ -47,5 +49,13 @@ export class EmailService {
           );
       }),
     );
+  }
+
+  retrieveMssages(): Observable<any> {
+    this.http.get<any>(this.baseUrl + '/messages', {
+      headers: new HttpHeaders({
+        Authentication: 'Bearer ' + this.token,
+      }),
+    });
   }
 }
