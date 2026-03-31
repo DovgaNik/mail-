@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { map, Observable, switchMap } from 'rxjs';
+import { from, map, Observable, switchMap } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { EmailMessage } from '../EmailMessage';
 
 @Injectable({
   providedIn: 'root',
@@ -41,7 +42,7 @@ export class EmailService {
                 })
                 .pipe(
                   map((token) => {
-                    this.token = token;
+                    this.token = token['token'];
                     return [token['token'], this.emailAddress];
                   }),
                 );
@@ -51,11 +52,30 @@ export class EmailService {
     );
   }
 
-  retrieveMssages(): Observable<any> {
-    this.http.get<any>(this.baseUrl + '/messages', {
+  retrieveMssages(): Observable<EmailMessage> {
+    return this.http.get<any>(this.baseUrl + '/messages', {
       headers: new HttpHeaders({
-        Authentication: 'Bearer ' + this.token,
+        Authorization: 'Bearer ' + this.token,
       }),
-    });
+    }).pipe(
+      map((messages) => messages['hydra:member'] ?? []),
+      switchMap((messageList: any[]) =>
+        from(
+          messageList.map((message: any) => {
+            const sender = typeof message.from === 'string'
+              ? message.from
+              : (message.from?.address ?? '');
+
+            return new EmailMessage(
+              message.id,
+              message.subject,
+              message.intro,
+              sender,
+              message.createdAt,
+            );
+          }),
+        ),
+      ),
+    );
   }
 }
