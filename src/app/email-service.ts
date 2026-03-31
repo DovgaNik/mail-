@@ -7,15 +7,17 @@ import { HttpClient } from '@angular/common/http';
 })
 export class EmailService {
   private baseUrl: string = 'https://api.mail.gw';
-  emailAddress: string = '';
-  password: string = '';
+  private emailAddress: string = '';
+  private password: string = '';
 
   constructor(private http: HttpClient) {}
 
+  // Function to generate a random string to be used as password or email adress.
   generateString() {
     return Math.random().toString(36).substring(7);
   }
 
+  // Function to be called for creating data.
   setupAccount(): Observable<any> {
     return this.http.get<any>(this.baseUrl + '/domains').pipe(
       map((domains) => {
