@@ -34,6 +34,7 @@ export class Temail {
   }
 
   getNewEmailAndSetCookie(){
+    this.utilsService.toastMessage("Getting a new adress email...")
     this.current_account = this.emailService.setupAccount()
 
     // Ici on va vérifier individuellement que les cookies réservés aux informations de l'addresse actuelle soient vide.
