@@ -3,16 +3,28 @@
   <p class="subtitle text-center">Emails sent to your temporary address will show up here instantly.</p>
 
   <div class="mailbox-card">
-    <div class="mailbox-header">
+    <div class="mailbox-header mailbox-grid">
       <div class="col-sender">Sender</div>
       <div class="col-subject">Subject</div>
       <div class="col-time">Time</div>
     </div>
 
     <div class="mailbox-body">
-      <div class="empty-state">
-        Waiting for incoming emails...
-      </div>
+      <ng-container *ngIf="messages$ | async as messages">
+        <div class="empty-state" *ngIf="loading">Loading incoming emails...</div>
+
+        <div class="empty-state" *ngIf="!loading && errorMessage">{{ errorMessage }}</div>
+
+        <div class="empty-state" *ngIf="!loading && !errorMessage && messages.length === 0">
+          Waiting for incoming emails...
+        </div>
+
+        <div class="mailbox-row mailbox-grid" *ngFor="let message of messages">
+          <div class="col-sender">{{ message.from.address || 'Unknown sender' }}</div>
+          <div class="col-subject">{{ message.subject || '(no subject)' }}</div>
+          <div class="col-time">{{ message.createdAt | date: 'shortTime' }}</div>
+        </div>
+      </ng-container>
     </div>
   </div>
 </div>

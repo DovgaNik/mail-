@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { map, Observable, switchMap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { EmailMessage, MessagesCollectionResponse } from './EmailMessage';
 
 @Injectable({
   providedIn: 'root',
@@ -49,5 +50,33 @@ export class EmailService {
           );
       }),
     );
+  }
+
+  retrieveMessages(token: string): Observable<EmailMessage[]> {
+    return this.http
+      .get<MessagesCollectionResponse>(`${this.baseUrl}/messages`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .pipe(
+        map((response) =>
+          response['hydra:member'].map((message) => ({
+            ...message,
+            htmlBody: message.htmlBody ?? [],
+          })),
+        ),
+      );
+  }
+
+  retrieveMessageById(messageId: string, token: string): Observable<EmailMessage> {
+    return this.http
+      .get<EmailMessage & { html?: string[] }>(`${this.baseUrl}/messages/${messageId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .pipe(
+        map((message) => ({
+          ...message,
+          htmlBody: message.html ?? [],
+        })),
+      );
   }
 }

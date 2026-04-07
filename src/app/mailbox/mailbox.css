@@ -14,25 +14,49 @@
 .mailbox-header {
     background-color: #bb2d3b;
     color: white;
-    display: flex;
-    padding: 18px 40px;
+    padding: 18px 0;
     font-size: 1.1rem;
     font-weight: 500;
+}
+
+.mailbox-grid {
+    display: flex;
+    width: 100%;
 }
 
 .col-sender { flex: 2; }
 .col-subject { flex: 4; }
 .col-time { flex: 1; text-align: right; }
 
+.mailbox-grid .col-sender,
+.mailbox-grid .col-subject,
+.mailbox-grid .col-time {
+    padding: 0 20px;
+}
+
+.mailbox-grid .col-sender,
+.mailbox-grid .col-subject {
+    border-right: 1px solid rgba(255, 255, 255, 0.35);
+}
+
 .mailbox-body {
     min-height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 20px 40px;
+    padding: 0;
 }
 
 .empty-state {
     color: #666;
     font-style: italic;
+    padding: 20px;
+}
+
+.mailbox-row {
+    padding: 16px 0;
+    border-top: 1px solid #ececec;
+    color: #333;
+}
+
+.mailbox-row .col-sender,
+.mailbox-row .col-subject {
+    border-right: 1px solid #ececec;
 }

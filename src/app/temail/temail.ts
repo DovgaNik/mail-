@@ -15,6 +15,7 @@ import { Observable } from 'rxjs';
 })
 export class Temail {
   email_adress = "email-email.email@email.com"
+  token: string = '';
   private current_account: Observable<{ token: any; emailAddress: string }> | null = null   // Variable pour manipuler le compte mail actuel.
 
   // Déclaration de la dépendance UtilService.
@@ -24,6 +25,7 @@ export class Temail {
     // Ici on va regarder si toute les informations sont présentes.
     if(this.cookieService.check(this.utilsService.cookie_email_name) /*&& this.cookieService.check(this.utilsService.cookie_password_name)*/ && this.cookieService.check(this.utilsService.cookie_token_name)){
       this.email_adress = this.cookieService.get(this.utilsService.cookie_email_name)
+      this.token = this.cookieService.get(this.utilsService.cookie_token_name)
     } else {
       this.getNewEmailAndSetCookie()
     }
@@ -51,6 +53,7 @@ export class Temail {
 
     this.current_account.subscribe((account) => {
       this.email_adress = account.emailAddress;
+      this.token = account.token;
 
       // Stockage des cookies
       this.cookieService.set(this.utilsService.cookie_email_name, account.emailAddress, {
