@@ -3,23 +3,55 @@
   <p class="subtitle text-center">Emails sent to your temporary address will show up here instantly.</p>
 
   <div class="mailbox-card">
-    <div class="mailbox-header mailbox-grid">
+    <div class="mailbox-header mailbox-grid" *ngIf="!selectedMessage && !loadingSelectedMessage && !selectedMessageError">
       <div class="col-sender">Sender</div>
       <div class="col-subject">Subject</div>
       <div class="col-time">Time</div>
     </div>
 
-    <div class="mailbox-body">
+    <div class="mailbox-body" [class.detail-mode]="selectedMessage || loadingSelectedMessage || !!selectedMessageError">
       <ng-container *ngIf="messages$ | async as messages">
-        <div class="empty-state" *ngIf="loading">Loading incoming emails...</div>
+        <div class="empty-state" *ngIf="loading && !selectedMessage && !loadingSelectedMessage">Loading incoming emails...</div>
 
-        <div class="empty-state" *ngIf="!loading && errorMessage">{{ errorMessage }}</div>
+        <div class="empty-state" *ngIf="!loading && errorMessage && !selectedMessage && !loadingSelectedMessage">{{ errorMessage }}</div>
 
-        <div class="empty-state" *ngIf="!loading && !errorMessage && messages.length === 0">
+        <div class="empty-state" *ngIf="!selectedMessage && !loadingSelectedMessage && !loading && !errorMessage && messages.length === 0">
           Waiting for incoming emails...
         </div>
 
-        <div class="mailbox-row mailbox-grid" *ngFor="let message of messages">
+        <div class="empty-state" *ngIf="loadingSelectedMessage">Opening email...</div>
+
+        <div class="empty-state" *ngIf="selectedMessageError">
+          <div>{{ selectedMessageError }}</div>
+          <button class="back-button" (click)="closeMessage()">Back to inbox</button>
+        </div>
+
+        <div class="message-detail" *ngIf="selectedMessage as message">
+          <div class="message-actions">
+            <button class="back-button" (click)="closeMessage()">Back to inbox</button>
+          </div>
+
+          <div class="message-metadata">
+            <div class="meta-row"><span class="meta-label">From</span><span class="meta-value">{{ message.from.address || '-' }}</span></div>
+            <div class="meta-row"><span class="meta-label">To</span><span class="meta-value">{{ formatRecipients(message.to) }}</span></div>
+            <div class="meta-row"><span class="meta-label">Cc</span><span class="meta-value">{{ formatRecipients(message.cc) }}</span></div>
+            <div class="meta-row"><span class="meta-label">Bcc</span><span class="meta-value">{{ formatRecipients(message.bcc) }}</span></div>
+            <div class="meta-row"><span class="meta-label">Subject</span><span class="meta-value">{{ message.subject || '(no subject)' }}</span></div>
+            <div class="meta-row"><span class="meta-label">Date</span><span class="meta-value">{{ message.createdAt | date: 'medium' }}</span></div>
+          </div>
+
+          <div class="message-content" *ngIf="getMessageHtml(message); else plainTextContent" [innerHTML]="getMessageHtml(message)"></div>
+          <ng-template #plainTextContent>
+            <pre class="message-content message-text">{{ message.text || 'No content available.' }}</pre>
+          </ng-template>
+        </div>
+
+        <div
+          class="mailbox-row mailbox-grid"
+          *ngFor="let message of messages"
+          (click)="openMessage(message.id)"
+          [hidden]="selectedMessage || loadingSelectedMessage || !!selectedMessageError"
+        >
           <div class="col-sender">{{ message.from.address || 'Unknown sender' }}</div>
           <div class="col-subject">{{ message.subject || '(no subject)' }}</div>
           <div class="col-time">{{ message.createdAt | date: 'shortTime' }}</div>
