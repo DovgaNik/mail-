@@ -19,7 +19,7 @@ export class AboutUs {
     {
       firstName: 'Malo',
       lastName: 'Barbaud',
-      avatar: 'assets/avatars/malo.png',
+      avatar: '/malo.png',
       github: 'https://github.com/Malo-35',
       description: `Malo's job was to make sure Nikita's data didn't break Anne-Amélie's beautiful layouts. Essentially spent the whole project working with Nikita and saying "Hey Nikita, the API is returning a 404," and "Hey Anne-Amélie, we can't actually make the email dance."`
     },
