@@ -9,6 +9,8 @@ export class EmailMessage {
   msgid: string = '';
   from: EmailParticipant = new EmailParticipant();
   to: EmailParticipant[] = [];
+  cc?: EmailParticipant[];
+  bcc?: EmailParticipant[];
   subject: string = '';
   intro: string = '';
   seen: boolean = false;

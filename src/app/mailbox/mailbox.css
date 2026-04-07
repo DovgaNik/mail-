@@ -44,6 +44,10 @@
     padding: 0;
 }
 
+.mailbox-body.detail-mode {
+    background: #f7f8fa;
+}
+
 .empty-state {
     color: #666;
     font-style: italic;
@@ -54,9 +58,79 @@
     padding: 16px 0;
     border-top: 1px solid #ececec;
     color: #333;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.mailbox-row:hover {
+    background: #fafafa;
 }
 
 .mailbox-row .col-sender,
 .mailbox-row .col-subject {
     border-right: 1px solid #ececec;
+}
+
+.message-detail {
+    padding: 20px;
+}
+
+.message-actions {
+    margin-bottom: 14px;
+}
+
+.back-button {
+    border: 1px solid #bb2d3b;
+    color: #bb2d3b;
+    background: white;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.message-metadata {
+    background: white;
+    border: 1px solid #ececec;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.meta-row {
+    display: flex;
+    border-bottom: 1px solid #ececec;
+}
+
+.meta-row:last-child {
+    border-bottom: 0;
+}
+
+.meta-label {
+    width: 90px;
+    padding: 10px 12px;
+    font-weight: 600;
+    color: #bb2d3b;
+    border-right: 1px solid #ececec;
+}
+
+.meta-value {
+    flex: 1;
+    padding: 10px 12px;
+    color: #333;
+    word-break: break-word;
+}
+
+.message-content {
+    margin-top: 16px;
+    background: white;
+    border: 1px solid #ececec;
+    border-radius: 16px;
+    padding: 14px;
+    color: #333;
+}
+
+.message-text {
+    white-space: pre-wrap;
+    margin: 0;
+    font-family: inherit;
 }
