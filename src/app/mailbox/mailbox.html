@@ -49,7 +49,7 @@
         <div
           class="mailbox-row mailbox-grid"
           *ngFor="let message of messages"
-          (click)="openMessage(message.id)"
+          (click)="openMessage(message)"
           [hidden]="selectedMessage || loadingSelectedMessage || !!selectedMessageError"
         >
           <div class="col-sender">{{ message.from.address || 'Unknown sender' }}</div>

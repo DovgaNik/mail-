@@ -29,15 +29,17 @@ export class Mailbox {
 
   constructor(private emailService: EmailService) {}
 
-  openMessage(messageId: string): void {
-    if (!this.authToken || !messageId) {
+  openMessage(message: EmailMessage): void {
+    if (!this.authToken || !message?.id) {
       return;
     }
 
+    // Show the detail panel immediately, then hydrate it with full API payload.
+    this.selectedMessage = message;
     this.loadingSelectedMessage = true;
     this.selectedMessageError = '';
 
-    this.emailService.retrieveMessageById(messageId, this.authToken).subscribe({
+    this.emailService.retrieveMessageById(message.id, this.authToken).subscribe({
       next: (message) => {
         this.selectedMessage = message;
         this.loadingSelectedMessage = false;
