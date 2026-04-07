@@ -1,11 +1,33 @@
+/* 1. The Container Fix */
 .main-header .container-fluid {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* Pushes Logo to left, Dropdown to right */
     align-items: center;
     background: #fff;
     border-bottom: 1px solid #eee;
+    padding: 5px 20px;
+    height: 70px; /* Gives the header a consistent height */
 }
 
+/* 2. The Navigation (The "Home" and "About Us" links) */
+.header-nav {
+    display: flex;
+    gap: 30px; /* Space between the links */
+}
+
+.header-nav a {
+    text-decoration: none; /* Kills the blue underline */
+    color: #444;           /* Dark grey to match your theme */
+    font-weight: 500;
+    font-size: 16px;
+    transition: color 0.2s ease;
+}
+
+.header-nav a:hover {
+    color: #bb2d3b; /* Turns red on hover */
+}
+
+/* 3. The Language Dropdown (Existing logic, just cleaned up) */
 .language-dropdown {
     position: relative;
     display: inline-block;
@@ -15,26 +37,27 @@
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 16px;
-    padding: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #444;
     display: flex;
     align-items: center;
     gap: 5px;
 }
-
 
 .dropdown-content {
     display: none; 
     position: absolute;
     right: 0;
     background-color: #ffffff;
-    min-width: 120px;
+    min-width: 150px;
     box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
-    z-index: 1;
+    z-index: 100;
     list-style: none;
-    padding: 0;
+    padding: 8px 0;
     margin: 0;
-    border: 1px solid #ddd;
+    border: 1px solid #eee;
+    border-radius: 8px; /* Rounded corners for the menu */
 }
 
 .language-dropdown:hover .dropdown-content {
@@ -43,12 +66,12 @@
 
 .dropdown-content a {
     color: #333;
-    padding: 10px 15px;
+    padding: 10px 20px;
     text-decoration: none;
     display: block;
 }
 
 .dropdown-content a:hover {
-    background-color: #f1f1f1;
-    color: #a01d24;
+    background-color: #f8f9fa;
+    color: #bb2d3b;
 }
